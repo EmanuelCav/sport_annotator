@@ -17,6 +17,7 @@ func Config() map[string]string {
 	variables := make(map[string]string)
 
 	variables["port"] = envFile["PORT"]
+	variables["db_uri"] = envFile["DB_URI"]
 
 	return variables
 }

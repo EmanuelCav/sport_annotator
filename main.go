@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/EmanuelCav/sport_annotator/config"
+	"github.com/EmanuelCav/sport_annotator/database"
+	"github.com/EmanuelCav/sport_annotator/models"
 	"github.com/EmanuelCav/sport_annotator/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -18,6 +20,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading env file")
 	}
+
+	database.Database()
+
+	database.Db.AutoMigrate(models.DashboardModel{})
 
 	app.Use(logger.New())
 	app.Use(cors.New())
