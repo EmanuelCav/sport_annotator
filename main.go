@@ -29,6 +29,7 @@ func main() {
 	app.Use(cors.New())
 
 	routes.DashboardRoute(app)
+	routes.CategoryRoute(app)
 
 	if err := app.Listen(":" + config.Config()["port"]); err != nil {
 		log.Fatal("Error to connect server")
