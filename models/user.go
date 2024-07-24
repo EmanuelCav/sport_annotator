@@ -8,7 +8,7 @@ type UserModel struct {
 	Email    string    `json:"email" gorm:"type:varchar(255);unique"`
 	Password string    `json:"password" gorm:"not null"`
 	Status   bool      `json:"status" gorm:"default:false"`
-	Role     RoleModel `json:"role"`
+	Role     RoleModel `json:"role" gorm:"foreignKey:RoleID;references:ID"`
 	RoleID   uint      `json:"roleId"`
 }
 
