@@ -48,11 +48,11 @@ func CreateCategory(c *fiber.Ctx) error {
 		})
 	}
 
-	noteSaved := database.Db.Create(&category)
+	categorySaved := database.Db.Create(&category)
 
-	if noteSaved.Error != nil {
+	if categorySaved.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"message": noteSaved.Error.Error(),
+			"message": categorySaved.Error.Error(),
 		})
 	}
 

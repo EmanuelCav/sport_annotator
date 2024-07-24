@@ -24,12 +24,19 @@ func main() {
 	database.Database()
 
 	database.Db.AutoMigrate(models.DashboardModel{})
+	database.Db.AutoMigrate(models.CategoryModel{})
+	database.Db.AutoMigrate(models.PointModel{})
+	database.Db.AutoMigrate(models.RoleModel{})
+	database.Db.AutoMigrate(models.TeamModel{})
+	database.Db.AutoMigrate(models.UserModel{})
 
 	app.Use(logger.New())
 	app.Use(cors.New())
 
 	routes.DashboardRoute(app)
 	routes.CategoryRoute(app)
+	routes.UserRoute(app)
+	routes.RoleRoute(app)
 
 	if err := app.Listen(":" + config.Config()["port"]); err != nil {
 		log.Fatal("Error to connect server")
