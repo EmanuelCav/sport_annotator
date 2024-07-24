@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/EmanuelCav/sport_annotator/database"
 	"github.com/EmanuelCav/sport_annotator/helper"
 	"github.com/EmanuelCav/sport_annotator/models"
@@ -24,32 +22,28 @@ func Roles(c *fiber.Ctx) error {
 
 func CreateRole(c *fiber.Ctx) error {
 
-	var role models.RoleModel
+	var createRole models.CreateRoleModel
 
-	if err := c.BodyParser(&role); err != nil {
+	if err := c.BodyParser(&createRole); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	fmt.Println(role)
-
-	if err := helper.Validate().Struct(&role); err != nil {
+	if err := helper.Validate().Struct(&createRole); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "There are empty field. Please complete",
 		})
 	}
 
-	if err := helper.Validate().Struct(&role); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"message": "There are empty field. Please complete",
-		})
-	}
-
-	if err := validation.RoleValid(role); err != "" {
+	if err := validation.RoleValid(createRole); err != "" {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err,
 		})
+	}
+
+	role := models.RoleModel{
+		Role: createRole.Role,
 	}
 
 	roleSaved := database.Db.Create(&role)

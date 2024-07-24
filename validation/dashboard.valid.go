@@ -6,7 +6,7 @@ import (
 	"github.com/EmanuelCav/sport_annotator/models"
 )
 
-func CategoryValid(category models.CategoryModel) string {
+func CategoryValid(category models.CreateCategoryModel) string {
 
 	var categoryValid models.CategoryModel
 

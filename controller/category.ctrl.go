@@ -22,30 +22,28 @@ func Categories(c *fiber.Ctx) error {
 
 func CreateCategory(c *fiber.Ctx) error {
 
-	var category models.CategoryModel
+	var createCategory models.CreateCategoryModel
 
-	if err := c.BodyParser(&category); err != nil {
+	if err := c.BodyParser(&createCategory); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	if err := helper.Validate().Struct(&category); err != nil {
+	if err := helper.Validate().Struct(&createCategory); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "There are empty field. Please complete",
 		})
 	}
 
-	if err := helper.Validate().Struct(&category); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"message": "There are empty field. Please complete",
-		})
-	}
-
-	if err := validation.CategoryValid(category); err != "" {
+	if err := validation.CategoryValid(createCategory); err != "" {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err,
 		})
+	}
+
+	category := models.CategoryModel{
+		Category: createCategory.Category,
 	}
 
 	categorySaved := database.Db.Create(&category)
