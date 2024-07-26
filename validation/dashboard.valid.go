@@ -21,3 +21,13 @@ func CategoryValid(category models.CreateCategoryModel) string {
 	return ""
 
 }
+
+func DashboardValid(dashboard models.CreateDashboardModel) string {
+
+	if !helper.ValidateTitle(dashboard.Name) {
+		return "Title does not accept <, > and ^ characters"
+	}
+
+	return ""
+
+}

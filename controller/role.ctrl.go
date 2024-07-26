@@ -12,7 +12,11 @@ func Roles(c *fiber.Ctx) error {
 
 	var roles []models.RoleModel
 
-	database.Db.Find(&roles)
+	if err := database.Db.Find(&roles); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"roles": roles,

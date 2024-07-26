@@ -12,7 +12,11 @@ func Categories(c *fiber.Ctx) error {
 
 	var categories []models.CategoryModel
 
-	database.Db.Find(&categories)
+	if err := database.Db.Find(&categories); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"categories": categories,

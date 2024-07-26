@@ -13,7 +13,11 @@ func Users(c *fiber.Ctx) error {
 
 	var users []models.UserModel
 
-	database.Db.Find(&users)
+	if err := database.Db.Find(&users); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"users": users,

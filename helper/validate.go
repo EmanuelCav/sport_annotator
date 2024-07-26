@@ -22,6 +22,11 @@ func ValidateUsername(text string) bool {
 	return isString(text)
 }
 
+func ValidateTitle(text string) bool {
+	isString := regexp.MustCompile(`^[^<>^]+$`).MatchString
+	return isString(text)
+}
+
 func Validate() *validator.Validate {
 	return validator.New()
 }

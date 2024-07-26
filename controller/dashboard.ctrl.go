@@ -2,7 +2,10 @@ package controller
 
 import (
 	"github.com/EmanuelCav/sport_annotator/database"
+	"github.com/EmanuelCav/sport_annotator/helper"
+	"github.com/EmanuelCav/sport_annotator/middleware"
 	"github.com/EmanuelCav/sport_annotator/models"
+	"github.com/EmanuelCav/sport_annotator/validation"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -10,10 +13,140 @@ func Dashboards(c *fiber.Ctx) error {
 
 	var dashboards []models.DashboardModel
 
-	database.Db.Find(&dashboards)
+	userId := middleware.UserId(c)
+
+	if err := database.Db.Where("user_id = ?", userId).Find(&dashboards); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"dashboards": dashboards,
 	})
 
+}
+
+func Dashboard(c *fiber.Ctx) error {
+
+	id := c.Params("id")
+
+	var dashboard models.DashboardModel
+
+	if err := database.Db.Where("id = ?", id).First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	if dashboard.UserID != middleware.UserId(c) {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "You cannot get this dashboard",
+		})
+	}
+
+	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
+		"dashboard": dashboard,
+	})
+
+}
+
+func CreateDashboards(c *fiber.Ctx) error {
+
+	var createDashboard models.CreateDashboardModel
+	var category models.CategoryModel
+
+	if err := c.BodyParser(&createDashboard); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if err := helper.Validate().Struct(&createDashboard); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "There are empty field. Please complete",
+		})
+	}
+
+	if err := validation.DashboardValid(createDashboard); err != "" {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err,
+		})
+	}
+
+	if err := database.Db.Where("category = ?", createDashboard.Category).First(&category); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Category does not exists",
+		})
+	}
+
+	userId := middleware.UserId(c)
+
+	dashboard := models.DashboardModel{
+		Name:   createDashboard.Name,
+		UserID: userId,
+		Teams: []models.TeamModel{
+			{
+				Name: "Team1",
+				Points: []models.PointModel{
+					{
+						Player: "",
+					},
+				},
+				Games: []uint{},
+				Sets:  []uint{},
+			},
+			{
+				Name: "Team2",
+				Points: []models.PointModel{
+					{
+						Player: "",
+					},
+				},
+				Games: []uint{},
+				Sets:  []uint{},
+			},
+		},
+		Markers:    []uint{},
+		CategoryID: category.ID,
+	}
+
+	dashboardSaved := database.Db.Create(&dashboard)
+
+	if dashboardSaved.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": dashboardSaved.Error.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
+		"dashboard": dashboard,
+		"message":   "Dashboard created successfully",
+	})
+
+}
+
+func RemoveDashboard(c *fiber.Ctx) error {
+
+	id := c.Params("id")
+
+	var dashboard models.DashboardModel
+
+	if err := database.Db.Where("id = ?", id).First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	if dashboard.UserID != middleware.UserId(c) {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "You cannot remove this dashboard",
+		})
+	}
+
+	database.Db.Where("id = ?", id).Delete(&dashboard)
+
+	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
+		"message": "Dashboard removed successfully",
+	})
 }
