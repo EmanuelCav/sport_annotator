@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/EmanuelCav/sport_annotator/database"
 	"github.com/EmanuelCav/sport_annotator/helper"
 	"github.com/EmanuelCav/sport_annotator/middleware"
@@ -29,11 +31,20 @@ func Dashboards(c *fiber.Ctx) error {
 
 func Dashboard(c *fiber.Ctx) error {
 
-	id := c.Params("id")
-
 	var dashboard models.DashboardModel
 
-	if err := database.Db.Where("id = ?", id).First(&dashboard); err.Error != nil {
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	dashboardId := uint(id)
+
+	if err := database.Db.Where("id = ?", dashboardId).Preload("Teams").Preload("Category").
+		First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "Dashboard does not exists",
 		})
@@ -55,6 +66,7 @@ func CreateDashboards(c *fiber.Ctx) error {
 
 	var createDashboard models.CreateDashboardModel
 	var category models.CategoryModel
+	var team models.TeamModel
 
 	if err := c.BodyParser(&createDashboard); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -87,24 +99,16 @@ func CreateDashboards(c *fiber.Ctx) error {
 		UserID: userId,
 		Teams: []models.TeamModel{
 			{
-				Name: "Team1",
-				Points: []models.PointModel{
-					{
-						Player: "",
-					},
-				},
-				Games: []uint{},
-				Sets:  []uint{},
+				Name:   "Team1",
+				Points: []models.PointModel{},
+				Games:  []uint{},
+				Sets:   []uint{},
 			},
 			{
-				Name: "Team2",
-				Points: []models.PointModel{
-					{
-						Player: "",
-					},
-				},
-				Games: []uint{},
-				Sets:  []uint{},
+				Name:   "Team2",
+				Points: []models.PointModel{},
+				Games:  []uint{},
+				Sets:   []uint{},
 			},
 		},
 		Markers:    []uint{},
@@ -119,6 +123,24 @@ func CreateDashboards(c *fiber.Ctx) error {
 		})
 	}
 
+	if err := database.Db.Preload("Teams").Find(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "User does not exists",
+		})
+	}
+
+	updateData := map[string]interface{}{
+		"DashboardID": dashboard.ID,
+	}
+
+	for i := 0; i < len(dashboard.Teams); i++ {
+		if err := database.Db.Model(&team).Where("id = ?", dashboard.Teams[i].ID).Updates(updateData).Error; err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"message": err.Error(),
+			})
+		}
+	}
+
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"dashboard": dashboard,
 		"message":   "Dashboard created successfully",
@@ -128,11 +150,19 @@ func CreateDashboards(c *fiber.Ctx) error {
 
 func RemoveDashboard(c *fiber.Ctx) error {
 
-	id := c.Params("id")
-
 	var dashboard models.DashboardModel
 
-	if err := database.Db.Where("id = ?", id).First(&dashboard); err.Error != nil {
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	dashboardId := uint(id)
+
+	if err := database.Db.Where("id = ?", dashboardId).First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "Dashboard does not exists",
 		})
@@ -144,7 +174,7 @@ func RemoveDashboard(c *fiber.Ctx) error {
 		})
 	}
 
-	database.Db.Where("id = ?", id).Delete(&dashboard)
+	database.Db.Where("id = ?", dashboardId).Delete(&dashboard)
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"message": "Dashboard removed successfully",

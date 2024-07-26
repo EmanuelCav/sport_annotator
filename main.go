@@ -37,6 +37,7 @@ func main() {
 	routes.CategoryRoute(app)
 	routes.UserRoute(app)
 	routes.RoleRoute(app)
+	routes.TeamRoute(app)
 
 	if err := app.Listen(":" + config.Config()["port"]); err != nil {
 		log.Fatal("Error to connect server")
