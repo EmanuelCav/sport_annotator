@@ -46,6 +46,10 @@ func (d *TeamModel) BeforeCreate(tx *gorm.DB) (err error) {
 		d.Sets = JSONUIntArray{}
 	}
 
+	if d.Points == nil {
+		d.Points = []PointModel{}
+	}
+
 	return
 }
 
@@ -57,5 +61,10 @@ func (d *TeamModel) BeforeUpdate(tx *gorm.DB) (err error) {
 	if d.Sets == nil {
 		d.Sets = JSONUIntArray{}
 	}
+
+	if d.Points == nil {
+		d.Points = []PointModel{}
+	}
+
 	return
 }

@@ -8,6 +8,6 @@ import (
 
 func TeamRoute(app *fiber.App) {
 
-	app.Put("teams/:id", middleware.Auth(), controller.UpdateTeam)
+	app.Put("/teams/:id", middleware.Auth(), controller.UpdateTeam)
 
 }

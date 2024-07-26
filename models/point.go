@@ -9,3 +9,7 @@ type PointModel struct {
 	Point  uint      `json:"point" gorm:"default:0"`
 	Player string    `json:"player"`
 }
+
+type PointData struct {
+	Points uint `json:"points" validate:"required"`
+}
