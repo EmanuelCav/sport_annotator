@@ -9,6 +9,7 @@ import (
 	"github.com/EmanuelCav/sport_annotator/models"
 	"github.com/EmanuelCav/sport_annotator/validation"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func Dashboards(c *fiber.Ctx) error {
@@ -17,7 +18,13 @@ func Dashboards(c *fiber.Ctx) error {
 
 	userId := middleware.UserId(c)
 
-	if err := database.Db.Where("user_id = ?", userId).Find(&dashboards); err.Error != nil {
+	if err := database.Db.Where("user_id = ?", userId).Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).Find(&dashboards); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err.Error.Error(),
 		})
@@ -43,7 +50,14 @@ func Dashboard(c *fiber.Ctx) error {
 
 	dashboardId := uint(id)
 
-	if err := database.Db.Where("id = ?", dashboardId).Preload("Teams").Preload("Category").
+	if err := database.Db.Where("id = ?", dashboardId).
+		Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).
 		First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "Dashboard does not exists",
@@ -123,7 +137,13 @@ func CreateDashboards(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := database.Db.Preload("Teams").Find(&dashboard); err.Error != nil {
+	if err := database.Db.Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).Find(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "User does not exists",
 		})

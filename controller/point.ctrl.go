@@ -7,6 +7,7 @@ import (
 	"github.com/EmanuelCav/sport_annotator/helper"
 	"github.com/EmanuelCav/sport_annotator/models"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func UpdatePoints(c *fiber.Ctx) error {
@@ -57,8 +58,13 @@ func UpdatePoints(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := database.Db.Where("id = ?", team.DashboardID).Preload("Teams").Preload("Category").
-		First(&dashboard); err.Error != nil {
+	if err := database.Db.Where("id = ?", team.DashboardID).Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "Dashboard does not exists",
 		})

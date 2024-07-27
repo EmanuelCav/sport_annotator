@@ -58,7 +58,7 @@ func LoginValid(user models.LoginModel) (string, models.UserModel) {
 
 	var userValid models.UserModel
 
-	if err := database.Db.Where("email = ?", user.Email).First(&userValid); err.Error != nil {
+	if err := database.Db.Where("email = ?", user.Email).First(&userValid).Select("username", "status", "id"); err.Error != nil {
 		return "Fields do not match", userValid
 	}
 

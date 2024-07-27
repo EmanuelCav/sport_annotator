@@ -43,7 +43,7 @@ func GenerateUser(c *fiber.Ctx) error {
 		RoleID:   role.ID,
 	}
 
-	userSaved := database.Db.Create(&user)
+	userSaved := database.Db.Create(&user).Select("username", "status", "id")
 
 	if userSaved.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
@@ -106,7 +106,7 @@ func RegisterUser(c *fiber.Ctx) error {
 		Email:    createUser.Email,
 	}
 
-	userSaved := database.Db.Create(&user)
+	userSaved := database.Db.Create(&user).Select("username", "status", "id")
 
 	if userSaved.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
