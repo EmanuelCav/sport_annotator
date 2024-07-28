@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type UserModel struct {
 	gorm.Model
 	Username string    `json:"username" gorm:"type:varchar(30);unique;not null"`
-	Email    string    `json:"email" gorm:"type:varchar(255);unique"`
+	Email    string    `json:"email" gorm:"type:varchar(255);"`
 	Password string    `json:"password" gorm:"not null"`
 	Status   bool      `json:"status" gorm:"default:false"`
 	Role     RoleModel `json:"role" gorm:"foreignKey:RoleID;references:ID"`

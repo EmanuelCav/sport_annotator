@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.navigation-contain {
+    text-align: center;
+    height: 100%;
+    li {
+        a {
+            display: block;
+            line-height: 1;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right,
+                    #fff,
+                    #fff 50%,
+                    #fff 50%);
+            background-size: 200% 100%;
+            background-position: -100%;
+            transition: all 0.3s ease-in-out;
+
+            &:before {
+                display: block;
+                content: '';
+                width: 0;
+                height: 3px;
+                bottom: 5px;
+                left: 0;
+                bottom: -3px;
+                z-index: 0;
+                position: absolute;
+                background: #fff;
+                transition: all 0.3s ease-in-out;
+            }
+
+            &:hover {
+                background-position: 0%;
+
+                &:before {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
