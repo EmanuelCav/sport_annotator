@@ -18,7 +18,9 @@ func Dashboards(c *fiber.Ctx) error {
 
 	userId := middleware.UserId(c)
 
-	if err := database.Db.Where("user_id = ?", userId).Preload("Teams.Points").
+	if err := database.Db.Where("user_id = ?", userId).
+		Preload("PointsHistory").
+		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "category")
 		}).
@@ -51,6 +53,7 @@ func Dashboard(c *fiber.Ctx) error {
 	dashboardId := uint(id)
 
 	if err := database.Db.Where("id = ?", dashboardId).
+		Preload("PointsHistory").
 		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "category")
@@ -137,7 +140,8 @@ func CreateDashboards(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := database.Db.Preload("Teams.Points").
+	if err := database.Db.Preload("PointsHistory").
+		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "category")
 		}).
@@ -199,4 +203,139 @@ func RemoveDashboard(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"message": "Dashboard removed successfully",
 	})
+}
+
+func UpdateDashboard(c *fiber.Ctx) error {
+
+	var dashboard models.DashboardModel
+	var updateDashboard models.UpdateDashboardModel
+
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	dashboardId := uint(id)
+
+	if err := database.Db.Where("id = ?", dashboardId).First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	if err := c.BodyParser(&updateDashboard); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	if err := helper.Validate().Struct(&updateDashboard); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "There are empty field. Please complete",
+		})
+	}
+
+	if err := validation.UpdateDashboardValid(updateDashboard); err != "" {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err,
+		})
+	}
+
+	updateData := map[string]interface{}{
+		"Name": updateDashboard.Name,
+	}
+
+	dashboardValid := database.Db.Model(&dashboard).Where("id = ?", dashboardId).Updates(updateData)
+
+	if dashboardValid.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": dashboardValid.Error.Error(),
+		})
+	}
+
+	if err := database.Db.Where("id = ?", dashboardId).
+		Preload("PointsHistory").
+		Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).
+		First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
+		"dashboard": dashboard,
+	})
+
+}
+
+func ResetDashboard(c *fiber.Ctx) error {
+
+	var dashboard models.DashboardModel
+
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	dashboardId := uint(id)
+
+	if err := database.Db.Where("id = ?", dashboardId).First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Team does not exists",
+		})
+	}
+
+	if err := database.Db.Where("dashboard_id = ?", dashboard.ID).Delete(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error,
+		})
+	}
+
+	dashboard.PointsHistory = dashboard.PointsHistory[:0]
+
+	updateData := map[string]interface{}{
+		"Hours":   0,
+		"Minutes": 0,
+		"Seconds": 0,
+	}
+
+	dashboardValid := database.Db.Model(&dashboard).Where("id = ?", dashboard.ID).Updates(updateData)
+
+	if dashboardValid.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": dashboardValid.Error.Error(),
+		})
+	}
+
+	if err := database.Db.Where("id = ?", dashboard.ID).
+		Preload("PointsHistory").
+		Preload("Teams.Points").
+		Preload("Category", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "category")
+		}).
+		Preload("User", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id")
+		}).
+		First(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+		"dashboard": dashboard,
+	})
+
 }

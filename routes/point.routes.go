@@ -9,5 +9,6 @@ import (
 func PointRoute(app *fiber.App) {
 
 	app.Put("/points/teams/:id", middleware.Auth(), controller.UpdatePoints)
+	app.Put("/points/:id", middleware.Auth(), controller.ComebackPoints)
 
 }

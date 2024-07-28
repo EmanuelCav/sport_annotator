@@ -6,6 +6,7 @@ import (
 	"github.com/EmanuelCav/sport_annotator/database"
 	"github.com/EmanuelCav/sport_annotator/helper"
 	"github.com/EmanuelCav/sport_annotator/models"
+	"github.com/EmanuelCav/sport_annotator/validation"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -44,6 +45,12 @@ func UpdateTeam(c *fiber.Ctx) error {
 		})
 	}
 
+	if err := validation.UpdateTeamValid(updateTeam); err != "" {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err,
+		})
+	}
+
 	updateData := map[string]interface{}{
 		"Name": updateTeam.Name,
 	}
@@ -57,6 +64,7 @@ func UpdateTeam(c *fiber.Ctx) error {
 	}
 
 	if err := database.Db.Where("id = ?", team.DashboardID).
+		Preload("PointsHistory").
 		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "category")

@@ -12,5 +12,6 @@ func DashboardRoute(app *fiber.App) {
 	app.Get("/dashboards/:id", middleware.Auth(), controller.Dashboard)
 	app.Post("/dashboards", middleware.Auth(), controller.CreateDashboards)
 	app.Delete("/dashboards/:id", middleware.Auth(), controller.RemoveDashboard)
+	app.Put("/dashboards/:id", middleware.Auth(), controller.ResetDashboard)
 
 }

@@ -31,3 +31,23 @@ func DashboardValid(dashboard models.CreateDashboardModel) string {
 	return ""
 
 }
+
+func UpdateDashboardValid(dashboard models.UpdateDashboardModel) string {
+
+	if !helper.ValidateTitle(dashboard.Name) {
+		return "Title does not accept <, > and ^ characters"
+	}
+
+	return ""
+
+}
+
+func UpdateTeamValid(team models.UpdateTeamModel) string {
+
+	if !helper.ValidateTitle(team.Name) {
+		return "Title does not accept <, > and ^ characters"
+	}
+
+	return ""
+
+}
