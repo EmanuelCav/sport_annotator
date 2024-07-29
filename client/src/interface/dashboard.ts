@@ -8,6 +8,7 @@ export interface IStoreDashboard {
 }
 
 export interface IDashboard {
+    id?: number;
     name?: string;
     markers?: number[];
     teams?: ITeam[];

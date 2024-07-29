@@ -29,6 +29,7 @@ func main() {
 	database.Db.AutoMigrate(models.RoleModel{})
 	database.Db.AutoMigrate(models.TeamModel{})
 	database.Db.AutoMigrate(models.UserModel{})
+	database.Db.AutoMigrate(models.ImageModel{})
 
 	app.Use(logger.New())
 	app.Use(cors.New())
@@ -39,6 +40,7 @@ func main() {
 	routes.RoleRoute(app)
 	routes.TeamRoute(app)
 	routes.PointRoute(app)
+	routes.ImageRoute(app)
 
 	if err := app.Listen(":" + config.Config()["port"]); err != nil {
 		log.Fatal("Error to connect server")

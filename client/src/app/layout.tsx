@@ -20,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={robotoSlab.className}>
         <Header />
-        {children}
+        <div className="container mx-auto py-6 px-2">
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -14,6 +14,8 @@ type TeamModel struct {
 	Games       JSONUIntArray `json:"games" gorm:"type:json"`
 	Sets        JSONUIntArray `json:"sets" gorm:"type:json"`
 	DashboardID uint          `json:"dashboard_id"`
+	ImageID     uint          `json:"ImageID"`
+	Image       ImageModel    `json:"image" gorm:"foreignKey:ImageID;references:ID"`
 }
 
 type UpdateTeamModel struct {

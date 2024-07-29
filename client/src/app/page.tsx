@@ -1,18 +1,23 @@
 "use client"
 
-import { generateUserApi } from "@/server/api/user.api";
+import { useEffect } from "react";
 
+import { generateUserApi } from "@/server/api/user.api";
 import { userStore } from "../server/store/user.store";
+
+import { getUserStorage } from "@/utils/storage";
 
 export default function Home() {
 
   const { isLoggedIn, generateUser } = userStore()
 
-  // if (!isLoggedIn) {
-  //   generateUserApi().then(data => {
-  //     generateUser(data);
-  //   });
-  // }
+  useEffect(() => {
+    if (!isLoggedIn && !getUserStorage().isLoggedIn) {
+      generateUserApi().then(data => {
+        generateUser(data);
+      });
+    }
+  }, [isLoggedIn])
 
   return (
     <div className="bg-red-200">

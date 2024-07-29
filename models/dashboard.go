@@ -17,6 +17,8 @@ type DashboardModel struct {
 	Hours         uint          `json:"hours" gorm:"default:0"`
 	UserID        uint          `json:"UserID"`
 	User          UserModel     `json:"user" gorm:"foreignKey:UserID;references:ID"`
+	ImageID       uint          `json:"ImageID"`
+	Image         ImageModel    `json:"image" gorm:"foreignKey:ImageID;references:ID"`
 }
 
 type CreateDashboardModel struct {

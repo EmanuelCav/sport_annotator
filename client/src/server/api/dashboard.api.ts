@@ -2,7 +2,7 @@ import { api } from "./api"
 
 import { IDashboard } from "@/interface/dashboard"
 
-export const dashboardsApi = async (token: string): Promise<IDashboard> => {
+export const dashboardsApi = async (token: string): Promise<IDashboard[]> => {
 
     const response = await fetch(api + "/dashboards", {
         headers: {
