@@ -2,9 +2,10 @@ import { IUser } from "./user";
 
 export interface IStoreDashboard {
     dashboard: IDashboard;
-    dashboads: IDashboard[];
+    dashboards: IDashboard[];
     getDashboards: (dashboardData: IDashboard[]) => void;
     getDashboard: (dashboardData: IDashboard) => void;
+    createDashboard: (dashboardData: IDashboard) => void;
 }
 
 export interface IDashboard {
@@ -27,6 +28,7 @@ export interface IDashboard {
 
 export interface ICategory {
     id: number;
+    category: string;
     createdAt: string;
     deletedAt: string | null;
     updatedAt: string;
@@ -54,4 +56,9 @@ export interface IPoint {
     createdAt: string;
     deletedAt: string | null;
     updatedAt: string;
+}
+
+export interface ICreateDashboard {
+    name: string;
+    category?: string;
 }
