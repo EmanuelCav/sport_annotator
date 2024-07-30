@@ -1,12 +1,12 @@
 import { useState } from "react"
 
-import { IDashboard } from "@/interface/dashboard"
-
 import MenuDashboard from "./components/MenuDashboard"
 import InfoDashboard from "./components/InfoDashboard"
 import OptionsMenuDashboard from "./components/OptionsMenuDashboard"
 
-const Dashboard = ({ dashboard }: { dashboard: IDashboard }) => {
+import { DashboadPropsType } from "@/types/scoreboard.types"
+
+const Dashboard = ({ dashboard, router }: DashboadPropsType) => {
 
   const [isMenuDashboard, setIsMenuDashboard] = useState<boolean>(false)
 
@@ -14,8 +14,12 @@ const Dashboard = ({ dashboard }: { dashboard: IDashboard }) => {
     setIsMenuDashboard(!isMenuDashboard)
   }
 
+  const redirectDashboard = () => {
+    router.push(`/scoreboards/${dashboard.ID}`)
+  }
+
   return (
-    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-sm bg-white border border-gray-200 cursor-pointer rounded-lg shadow hover:shadow-lg active:shadow" onClick={redirectDashboard}>
       <div className="flex justify-end px-4 pt-4">
         <MenuDashboard handleMenu={handleMenu} />
         {

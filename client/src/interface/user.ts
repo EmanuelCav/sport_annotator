@@ -10,22 +10,22 @@ export interface IUserInfo {
 }
 
 export interface IUser {
-    id: number;
+    ID: number;
     username: string;
     email: string;
     password: string;
     status: boolean;
-    role_id: number;
+    RoleID: number;
     role: IRole;
     createdAt: string;
     deletedAt: string | null;
-    updatedAt: string;
+    UpdatedAt: string;
 }
 
 export interface IRole {
-    id: number;
+    ID: number;
     role: string;
     createdAt: string;
     deletedAt: string | null;
-    updatedAt: string;
+    UpdatedAt: string;
 }

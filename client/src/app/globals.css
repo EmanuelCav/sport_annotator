@@ -51,3 +51,7 @@
 .fill-screen {
     height: calc(100vh - 114px);
 }
+
+.fill-annotator {
+    height: calc(100vh - 202px);
+}

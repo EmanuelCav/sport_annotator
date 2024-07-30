@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from "react"
+import { useRouter } from 'next/navigation';
 
 import Dashboard from "@/components/scoreboards/dashboard"
 
@@ -12,6 +13,8 @@ const Scoreboards = () => {
 
   const { user } = userStore()
   const { dashboards, getDashboards } = dashboardStore()
+
+  const router = useRouter()
 
   useEffect(() => {
     if (user.token) {
@@ -25,7 +28,7 @@ const Scoreboards = () => {
     <div className="w-full flex justify-around items-center flex-wrap">
       {
         dashboards.map((dashboard, index) => {
-          return <Dashboard dashboard={dashboard} key={index} />
+          return <Dashboard dashboard={dashboard} router={router} key={index} />
         })
       }
     </div>

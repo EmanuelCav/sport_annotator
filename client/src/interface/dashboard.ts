@@ -9,53 +9,53 @@ export interface IStoreDashboard {
 }
 
 export interface IDashboard {
-    id?: number;
+    ID?: number;
     name?: string;
     markers?: number[];
     teams?: ITeam[];
     pointshistory?: IPoint[];
-    category_id?: number;
+    CategoryID?: number;
     category?: ICategory;
     seconds?: number;
     minutes?: number;
     hours?: number;
-    user_id?: number;
+    UserID?: number;
     user?: IUser;
-    createdAt?: string;
-    deletedAt?: string | null;
-    updatedAt?: string;
+    CreatedAt?: string;
+    DeletedAt?: string | null;
+    UpdatedAt?: string;
 }
 
 export interface ICategory {
-    id: number;
+    ID: number;
     category: string;
-    createdAt: string;
-    deletedAt: string | null;
-    updatedAt: string;
+    CreatedAt: string;
+    DeletedAt: string | null;
+    UpdatedAt: string;
 }
 
 export interface ITeam {
-    id: number;
+    ID: number;
     name: string;
     points: IPoint[];
     games: number[];
     sets: number[];
-    dashboard_id: number;
-    createdAt: string;
-    deletedAt: string | null;
-    updatedAt: string;
+    DashboardID: number;
+    CreatedAt: string;
+    DeletedAt: string | null;
+    UpdatedAt: string;
 }
 
 export interface IPoint {
-    id: number;
+    ID: number;
     team: ITeam;
-    team_id: number;
+    TeamID: number;
     point: number;
     player: string;
-    dashboard_id: number;
-    createdAt: string;
-    deletedAt: string | null;
-    updatedAt: string;
+    DashboardID: number;
+    CreatedAt: string;
+    DeletedAt: string | null;
+    UpdatedAt: string;
 }
 
 export interface ICreateDashboard {
