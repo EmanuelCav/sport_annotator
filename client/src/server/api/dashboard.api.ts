@@ -14,7 +14,7 @@ export const dashboardsApi = async (token: string): Promise<IDashboard[]> => {
 
     if (!response.ok) {
         throw new Error(data)
-    }    
+    }
 
     return data.dashboards
 
@@ -32,7 +32,7 @@ export const dashboardApi = async (token: string, id: string): Promise<IDashboar
 
     if (!response.ok) {
         throw new Error(data)
-    }    
+    }
 
     return data.dashboard
 
@@ -54,8 +54,27 @@ export const createDashboardApi = async (token: string, dashboardData: ICreateDa
 
     if (!response.ok) {
         throw new Error(data)
-    }    
+    }
 
     return data.dashboard
+
+}
+
+export const removeDashboardApi = async (id: number, token: string): Promise<string> => {
+
+    const response = await fetch(api + "/dashboards/" + id, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data)
+    }
+
+    return data.message
 
 }

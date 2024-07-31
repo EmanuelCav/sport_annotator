@@ -22,6 +22,9 @@ func Dashboards(c *fiber.Ctx) error {
 		Preload("Teams.Image", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "image")
 		}).
+		Preload("Image", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "image")
+		}).
 		Preload("PointsHistory").
 		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
@@ -57,6 +60,9 @@ func Dashboard(c *fiber.Ctx) error {
 
 	if err := database.Db.Where("id = ?", dashboardId).
 		Preload("Teams.Image", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "image")
+		}).
+		Preload("Image", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "image")
 		}).
 		Preload("PointsHistory").
@@ -158,6 +164,9 @@ func CreateDashboards(c *fiber.Ctx) error {
 
 	if err := database.Db.Preload("PointsHistory").
 		Preload("Teams.Image", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "image")
+		}).
+		Preload("Image", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "image")
 		}).
 		Preload("Teams.Points").
@@ -279,6 +288,9 @@ func UpdateDashboard(c *fiber.Ctx) error {
 		Preload("Teams.Image", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "image")
 		}).
+		Preload("Image", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "image")
+		}).
 		Preload("PointsHistory").
 		Preload("Teams.Points").
 		Preload("Category", func(db *gorm.DB) *gorm.DB {
@@ -343,6 +355,9 @@ func ResetDashboard(c *fiber.Ctx) error {
 
 	if err := database.Db.Where("id = ?", dashboard.ID).
 		Preload("Teams.Image", func(db *gorm.DB) *gorm.DB {
+			return db.Select("id", "image")
+		}).
+		Preload("Image", func(db *gorm.DB) *gorm.DB {
 			return db.Select("id", "image")
 		}).
 		Preload("PointsHistory").

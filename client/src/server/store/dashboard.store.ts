@@ -9,7 +9,8 @@ export const dashboardStore = create(
             dashboards: [],
             dashboard: {},
             getDashboards: (dashboardData: IDashboard[]) => set({
-                dashboards: dashboardData
+                dashboards: dashboardData,
+                dashboard: {}
             }),
             getDashboard: (dashboardData: IDashboard) => set({
                 dashboard: dashboardData
@@ -17,6 +18,10 @@ export const dashboardStore = create(
             createDashboard: (dashboardData: IDashboard) => set((state) => ({
                 dashboard: dashboardData,
                 dashboards: [...state.dashboards, dashboardData]
+            })),
+            removeDashboard: (dashboardId: number) => set((state) => ({
+                dashboards: state.dashboards.filter(dashboard => dashboard.ID !== dashboardId),
+                dashboard: {}
             }))
         }),
         {

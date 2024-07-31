@@ -1,17 +1,13 @@
+import OptionMenuDashboard from "./components/OptionMenuDashboard"
 
-const OptionsMenuDashboard = () => {
+import { OptionsMenuDashboardType } from "@/types/scoreboard.types"
+
+const OptionsMenuDashboard = ({ handleRemove }: OptionsMenuDashboardType) => {
     return (
-        <div className="z-10 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
-            <ul className="py-2" aria-labelledby="dropdownButton">
-                <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
-                </li>
-                <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Export Data</a>
-                </li>
-                <li>
-                    <a href="#" className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Delete</a>
-                </li>
+        <div className="absolute top-10 border border-orange-200 border-solid right-3 z-10 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44">
+            <ul className="py-2">
+                <OptionMenuDashboard func={() => { }} text="Edit" color="gray" />
+                <OptionMenuDashboard func={handleRemove} text="Delete" color="red" />
             </ul>
         </div>
     )

@@ -6,6 +6,7 @@ export interface IStoreDashboard {
     getDashboards: (dashboardData: IDashboard[]) => void;
     getDashboard: (dashboardData: IDashboard) => void;
     createDashboard: (dashboardData: IDashboard) => void;
+    removeDashboard: (dashboadId: number) => void;
 }
 
 export interface IDashboard {
@@ -21,9 +22,20 @@ export interface IDashboard {
     hours?: number;
     UserID?: number;
     user?: IUser;
+    ImageID?: number;
+    image?: IImage;
     CreatedAt?: string;
     DeletedAt?: string | null;
     UpdatedAt?: string;
+}
+
+export interface IImage {
+    ID: number;
+    image: string;
+    image_id: string;
+    CreatedAt: string;
+    DeletedAt: string | null;
+    UpdatedAt: string;
 }
 
 export interface ICategory {
@@ -40,6 +52,8 @@ export interface ITeam {
     points: IPoint[];
     games: number[];
     sets: number[];
+    ImageID: number;
+    image: IImage;
     DashboardID: number;
     CreatedAt: string;
     DeletedAt: string | null;

@@ -1,6 +1,7 @@
-import { ICategory } from "@/interface/dashboard";
 import { HTMLInputAutoCompleteAttribute, HTMLInputTypeAttribute } from "react";
 import { FieldError, UseFormRegister } from "react-hook-form";
+
+import { ICategory } from "@/interface/dashboard";
 
 export type InputFormPropsType = {
     autoFocus: boolean; 
@@ -16,4 +17,10 @@ export type SelectFormPropsType = {
     register: UseFormRegister<any>;
     errors: FieldError;
     data: ICategory[];
+}
+
+export type SurePropsType = {
+    text: string;
+    action: () => void;
+    handleRemove: () => void;
 }
