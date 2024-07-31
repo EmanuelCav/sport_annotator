@@ -78,3 +78,23 @@ export const removeDashboardApi = async (id: number, token: string): Promise<str
     return data.message
 
 }
+
+export const updateDashboardApi = async (id: number, token: string, formData: FormData): Promise<IDashboard> => {
+
+    const response = await fetch(api + "/dashboards/" + id, {
+        method: 'PUT',
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${token}`
+        },
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data)
+    }
+
+    return data.dashboard
+
+}

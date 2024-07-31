@@ -22,12 +22,18 @@ export type TeamInfoPropsType = {
     team: ITeam;
 }
 
-export type OptionMenuDashboardType = {
+export type OptionMenuDashboardPropsType = {
     func: () => void;
     text: string;
     color: string;
 }
 
-export type OptionsMenuDashboardType = {
+export type OptionsMenuDashboardPropsType = {
     handleRemove: () => void;
+    handleUpdate: () => void;
+}
+
+export type UpdateDasboardPropsType = {
+    handleUpdate: () => void;
+    dashboard: IDashboard;
 }

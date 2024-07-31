@@ -1,5 +1,21 @@
 import { IPoint } from "@/interface/dashboard"
 
+export const imageBlob = (image: string | Blob) => {
+
+    if (typeof image === 'string') {
+        fetch(image)
+            .then(response => response.blob())
+            .then(blob => {
+                return URL.createObjectURL(blob);
+            });
+    } else {
+        return URL.createObjectURL(image)
+    }
+
+    return image
+
+}
+
 export const calculatePoints = (points: IPoint[]): number => {
 
     let sum = 0

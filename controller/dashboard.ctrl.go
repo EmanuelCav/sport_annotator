@@ -7,6 +7,7 @@ import (
 	"github.com/EmanuelCav/sport_annotator/helper"
 	"github.com/EmanuelCav/sport_annotator/middleware"
 	"github.com/EmanuelCav/sport_annotator/models"
+	"github.com/EmanuelCav/sport_annotator/utils"
 	"github.com/EmanuelCav/sport_annotator/validation"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -226,7 +227,11 @@ func RemoveDashboard(c *fiber.Ctx) error {
 		})
 	}
 
-	database.Db.Where("id = ?", dashboardId).Delete(&dashboard)
+	if err := database.Db.Where("id = ?", dashboardId).Delete(&dashboard); err.Error != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error.Error(),
+		})
+	}
 
 	return c.Status(fiber.StatusAccepted).JSON(&fiber.Map{
 		"message": "Dashboard removed successfully",
@@ -236,6 +241,7 @@ func RemoveDashboard(c *fiber.Ctx) error {
 func UpdateDashboard(c *fiber.Ctx) error {
 
 	var dashboard models.DashboardModel
+	var image models.ImageModel
 	var updateDashboard models.UpdateDashboardModel
 
 	id, err := strconv.Atoi(c.Params("id"))
@@ -251,6 +257,12 @@ func UpdateDashboard(c *fiber.Ctx) error {
 	if err := database.Db.Where("id = ?", dashboardId).First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "Dashboard does not exists",
+		})
+	}
+
+	if dashboard.UserID != middleware.UserId(c) {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "You cannot update this dashboard",
 		})
 	}
 
@@ -272,8 +284,50 @@ func UpdateDashboard(c *fiber.Ctx) error {
 		})
 	}
 
+	url, imageId, err := utils.FormData(c)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	newImageId := dashboard.ImageID
+
+	if url != "" {
+		if dashboard.ImageID != 1 {
+			if err := utils.DestroyImage(dashboard.Image.ImageId); err != nil {
+				return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+					"message": err.Error(),
+				})
+			}
+
+			if err := database.Db.Where("id = ?", dashboard.ImageID).Delete(&image); err.Error != nil {
+				return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+					"message": err.Error.Error(),
+				})
+			}
+		}
+
+		newImage := models.ImageModel{
+			Image:   url,
+			ImageId: imageId,
+		}
+
+		imageSaved := database.Db.Create(&newImage)
+
+		if imageSaved.Error != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"message": imageSaved.Error.Error(),
+			})
+		}
+
+		newImageId = newImage.ID
+	}
+
 	updateData := map[string]interface{}{
-		"Name": updateDashboard.Name,
+		"Name":    updateDashboard.Name,
+		"ImageID": newImageId,
 	}
 
 	dashboardValid := database.Db.Model(&dashboard).Where("id = ?", dashboardId).Updates(updateData)
@@ -327,7 +381,13 @@ func ResetDashboard(c *fiber.Ctx) error {
 
 	if err := database.Db.Where("id = ?", dashboardId).First(&dashboard); err.Error != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
-			"message": "Team does not exists",
+			"message": "Dashboard does not exists",
+		})
+	}
+
+	if dashboard.UserID != middleware.UserId(c) {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "You cannot update this dashboard",
 		})
 	}
 

@@ -5,6 +5,7 @@
 .navigation-contain {
     text-align: center;
     height: 100%;
+
     li {
         a {
             display: block;
@@ -54,4 +55,8 @@
 
 .fill-annotator {
     height: calc(100vh - 202px);
+}
+
+#image-update {
+    display: none;
 }

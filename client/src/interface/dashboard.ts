@@ -7,6 +7,7 @@ export interface IStoreDashboard {
     getDashboard: (dashboardData: IDashboard) => void;
     createDashboard: (dashboardData: IDashboard) => void;
     removeDashboard: (dashboadId: number) => void;
+    updateDashboard: (dashboardData: IDashboard) => void;
 }
 
 export interface IDashboard {
@@ -75,4 +76,8 @@ export interface IPoint {
 export interface ICreateDashboard {
     name: string;
     category?: string;
+}
+
+export interface IUpdateDashboard {
+    name: string;
 }

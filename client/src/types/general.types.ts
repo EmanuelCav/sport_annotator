@@ -11,6 +11,7 @@ export type InputFormPropsType = {
     autoComplete: HTMLInputAutoCompleteAttribute;
     register: UseFormRegister<any>;
     errors: FieldError;
+    value?: string;
 }
 
 export type SelectFormPropsType = { 

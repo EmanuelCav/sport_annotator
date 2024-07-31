@@ -22,6 +22,10 @@ export const dashboardStore = create(
             removeDashboard: (dashboardId: number) => set((state) => ({
                 dashboards: state.dashboards.filter(dashboard => dashboard.ID !== dashboardId),
                 dashboard: {}
+            })),
+            updateDashboard: (dashboard: IDashboard) => set((state) => ({
+                dashboards: state.dashboards.map(dash => dash.ID === dashboard.ID ? dashboard : dash),
+                dashboard
             }))
         }),
         {
