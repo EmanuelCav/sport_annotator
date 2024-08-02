@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
 
 import Team from '@/components/scoreboard/Team'
 import HeaderScoreboard from '@/components/scoreboard/HeaderScoreboard'
@@ -18,6 +18,17 @@ const Scoreboard = () => {
     const { getDashboard, dashboard } = dashboardStore()
 
     const params = useParams()
+    const router = useRouter()
+
+    const [isStarted, setIsStarted] = useState<boolean>(false)
+
+    const [seconds, setSeconds] = useState<number>(dashboard.seconds!)
+    const [minutes, setMinutes] = useState<number>(dashboard.minutes!)
+    const [hours, setHours] = useState<number>(dashboard.hours!)
+
+    const redirectScoreboards = () => {
+        router.push('/scoreboards')
+    }
 
     useEffect(() => {
         if (user.token && params.id) {
@@ -27,9 +38,33 @@ const Scoreboard = () => {
         }
     }, [user.token])
 
+    useEffect(() => {
+
+        setTimeout(() => {
+
+            if (isStarted) {
+                if (seconds === 59) {
+                    setSeconds(0)
+                    setMinutes(minutes + 1)
+                } else {
+                    setSeconds(seconds + 1)
+                }
+
+                if (minutes === 59 && seconds == 59) {
+                    setMinutes(0)
+                    setHours(hours + 1)
+                }
+
+            }
+
+        }, 1000);
+
+    }, [seconds, isStarted])
+
     return (
         <div className='w-full'>
-            <HeaderScoreboard />
+            <HeaderScoreboard hours={hours} minutes={minutes} seconds={seconds} isStarted={isStarted} 
+            redirectScoreboards={redirectScoreboards} />
             <div className='p-4 flex justify-center items-center w-full'>
                 {
                     dashboard.teams?.map((team: ITeam, index: number) => {

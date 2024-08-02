@@ -150,7 +150,7 @@ func CreateDashboards(c *fiber.Ctx) error {
 				ImageID: image.ID,
 			},
 		},
-		Markers:    []uint{},
+		Markers:    utils.MarkersGenerator(createDashboard.Category),
 		CategoryID: category.ID,
 		ImageID:    image.ID,
 	}
@@ -204,6 +204,7 @@ func CreateDashboards(c *fiber.Ctx) error {
 func RemoveDashboard(c *fiber.Ctx) error {
 
 	var dashboard models.DashboardModel
+	var image models.ImageModel
 
 	id, err := strconv.Atoi(c.Params("id"))
 
@@ -225,6 +226,20 @@ func RemoveDashboard(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": "You cannot remove this dashboard",
 		})
+	}
+
+	if dashboard.ImageID != 1 {
+		if err := utils.DestroyImage(dashboard.Image.ImageId); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"message": err.Error(),
+			})
+		}
+
+		if err := database.Db.Where("id = ?", dashboard.ImageID).Delete(&image); err.Error != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+				"message": err.Error.Error(),
+			})
+		}
 	}
 
 	if err := database.Db.Where("id = ?", dashboardId).Delete(&dashboard); err.Error != nil {

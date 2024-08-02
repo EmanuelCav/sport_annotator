@@ -37,3 +37,29 @@ export type UpdateDasboardPropsType = {
     handleUpdate: () => void;
     dashboard: IDashboard;
 }
+
+export type HeaderScoreboardPropsType = {
+    hours: number;
+    minutes: number;
+    seconds: number;
+    isStarted: boolean;
+    redirectScoreboards: () => void;
+}
+
+export type TimePropsType = {
+    hours: number;
+    minutes: number;
+    seconds: number;
+    isStarted: boolean;
+}
+
+export type ButtonHeaderPropsType = {
+    Icon: any;
+    func: () => void;
+}
+
+export type ButtonTimePropsType = {
+    Icon: any;
+    func: () => void;
+    disabled: boolean;
+}
