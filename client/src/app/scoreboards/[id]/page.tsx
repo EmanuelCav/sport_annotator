@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 
 import Team from '@/components/scoreboard/Team'
 import HeaderScoreboard from '@/components/scoreboard/HeaderScoreboard'
+import ButtonsMarkers from '@/components/scoreboard/ButtonsSettings'
 
 import { ITeam } from '@/interface/dashboard'
 
@@ -65,6 +66,7 @@ const Scoreboard = () => {
         <div className='w-full'>
             <HeaderScoreboard hours={hours} minutes={minutes} seconds={seconds} isStarted={isStarted} 
             redirectScoreboards={redirectScoreboards} />
+            <ButtonsMarkers />
             <div className='p-4 flex justify-center items-center w-full'>
                 {
                     dashboard.teams?.map((team: ITeam, index: number) => {
