@@ -42,6 +42,7 @@ export interface IImage {
 export interface ICategory {
     ID: number;
     category: string;
+    image: string;
     CreatedAt: string;
     DeletedAt: string | null;
     UpdatedAt: string;

@@ -8,7 +8,7 @@ import (
 
 func CategoryRoute(app *fiber.App) {
 
-	app.Get("/categories", middleware.Auth(), controller.Categories)
+	app.Get("/categories", controller.Categories)
 	app.Post("/categories", middleware.Auth(), middleware.Admin(), controller.CreateCategory)
 
 }

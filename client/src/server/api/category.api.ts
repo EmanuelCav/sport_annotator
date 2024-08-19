@@ -2,13 +2,9 @@ import { api } from "./api"
 
 import { ICategory } from "@/interface/dashboard"
 
-export const categoriesApi = async (token: string): Promise<ICategory[]> => {
+export const categoriesApi = async (): Promise<ICategory[]> => {
 
-    const response = await fetch(api + "/categories", {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        },
-    })
+    const response = await fetch(api + "/categories")
 
     const data = await response.json()
 
