@@ -8,12 +8,9 @@ export const userStore = create(
         (set) => ({
             isLoggedIn: false,
             user: {},
-            generateUser: (userData: IUserInfo) => set(() => ({
+            authUser: (userData: IUserInfo) => set(() => ({
                 isLoggedIn: true,
-                user: {
-                    token: userData.token,
-                    user: userData.user
-                }
+                user: userData
             }))
         }),
         {

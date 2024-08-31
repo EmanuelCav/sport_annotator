@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import InputForm from '../../components/general/InputForm'
+import InputForm from '@/components/general/InputForm'
 import SelectForm from '@/components/create/SelectForm';
 
 import { ICategory, ICreateDashboard } from '@/interface/dashboard';
@@ -28,13 +28,22 @@ const Create = () => {
   const [categories, setCategories] = useState<ICategory[]>([])
 
   const uploadDashboard = async (data: ICreateDashboard) => {
-    const dashboardData = await createDashboardApi(user.token!, data)
-    createDashboard(dashboardData)
+
+    try {
+      const dashboardData = await createDashboardApi(user.token!, data)
+      createDashboard(dashboardData)
+      reset()
+    } catch (error) {
+      console.log(error);
+    } finally {
+      console.log("Finally");
+    }
+
   }
 
   useEffect(() => {
     if (user.token) {
-      categoriesApi(user.token).then((data) => {
+      categoriesApi().then((data) => {
         setCategories(data)
       })
     }

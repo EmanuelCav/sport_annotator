@@ -1,7 +1,7 @@
 export interface IStoreUser {
     isLoggedIn: boolean;
     user: IUserInfo;
-    generateUser: (userData: IUserInfo) => void;
+    authUser: (userData: IUserInfo) => void;
 }
 
 export interface IUserInfo {
@@ -28,4 +28,9 @@ export interface IRole {
     createdAt: string;
     deletedAt: string | null;
     UpdatedAt: string;
+}
+
+export interface ILogin {
+    email: string;
+    password: string;
 }

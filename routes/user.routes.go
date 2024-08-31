@@ -9,7 +9,7 @@ func UserRoute(app *fiber.App) {
 
 	app.Get("/users", controller.Users)
 	app.Post("/users", controller.GenerateUser)
-	app.Post("/register/users", controller.RegisterUser)
-	app.Post("/login/users", controller.Login)
+	app.Post("/users/register", controller.RegisterUser)
+	app.Post("/users/login", controller.Login)
 
 }

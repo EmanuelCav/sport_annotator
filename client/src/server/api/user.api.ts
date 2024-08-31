@@ -1,15 +1,16 @@
 import { api } from "./api"
 
-import { IUserInfo } from "@/interface/user"
+import { ILogin, IUserInfo } from "@/interface/user"
 
-export const generateUserApi = async (): Promise<IUserInfo> => {
+export const loginApi = async (userData: ILogin): Promise<IUserInfo> => {
 
-    const response = await fetch(api + "/users", {
+    const response = await fetch(api + "/users/login", {
         method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
+        body: JSON.stringify(userData)
     })
 
     const data = await response.json()
