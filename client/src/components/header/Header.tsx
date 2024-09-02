@@ -18,7 +18,7 @@ const Header = () => {
     return (
         <div className="bg-amber-500 border-amber-200 px-4 lg:px-6">
             <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-                <Logo />
+                <Logo isLoggedIn={isLoggedIn} />
                 {
                     isLoggedIn ? <>
                         <ActionsHeader />

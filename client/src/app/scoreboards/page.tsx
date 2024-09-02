@@ -16,6 +16,10 @@ const Scoreboards = () => {
 
   const router = useRouter()
 
+  const handleCreate = () => {
+    router.push('/create')
+  }
+
   useEffect(() => {
     if (user.token) {
       dashboardsApi(user.token).then(data => {
@@ -25,13 +29,25 @@ const Scoreboards = () => {
   }, [user.token])
 
   return (
-    <div className="w-full flex justify-around items-center flex-wrap">
+    <div className="w-full flex justify-around items-center flex-wrap mt-8">
       {
-        dashboards.map((dashboard, index) => {
-          return <Dashboard removeDashboard={removeDashboard} dashboard={dashboard} router={router} key={index} token={user.token!} />
-        })
+        dashboards.length === 0 ? (
+          <p className="mt-8 text-gray-900 text-lg">There are not scoreboards yet
+            <span className="text-orange-500 font-bold ml-2 cursor-pointer hover:underline active:no-underline" onClick={handleCreate}>
+              Start now!
+            </span>
+          </p>
+        ) : (
+          <>
+            {
+              dashboards.map((dashboard, index) => {
+                return <Dashboard removeDashboard={removeDashboard} dashboard={dashboard} router={router} key={index} token={user.token!} />
+              })
+            }
+          </>
+        )
       }
-    </div>
+    </div >
   )
 }
 

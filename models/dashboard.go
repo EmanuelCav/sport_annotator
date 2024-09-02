@@ -1,13 +1,16 @@
 package models
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+
 	"gorm.io/gorm"
 )
 
 type DashboardModel struct {
 	gorm.Model
 	Name          string        `json:"name" gorm:"type:varchar(60);not null"`
-	Markers       []uint        `json:"markers" gorm:"type:json"`
+	Markers       UintSlice     `json:"markers" gorm:"type:json"`
 	Teams         []TeamModel   `json:"teams" gorm:"foreignKey:DashboardID;constraint;OnDelete:CASCADE"`
 	PointsHistory []PointModel  `json:"pointshistory" gorm:"foreignKey:DashboardID;constraint;OnDelete:CASCADE"`
 	CategoryID    uint          `json:"CategoryID"`
@@ -28,4 +31,14 @@ type CreateDashboardModel struct {
 
 type UpdateDashboardModel struct {
 	Name string `json:"name" validate:"required"`
+}
+
+type UintSlice []uint
+
+func (u UintSlice) Value() (driver.Value, error) {
+	return json.Marshal(u)
+}
+
+func (u *UintSlice) Scan(value interface{}) error {
+	return json.Unmarshal(value.([]byte), u)
 }

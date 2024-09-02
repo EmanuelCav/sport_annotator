@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useRouter } from 'next/navigation'
 
 import InputForm from '@/components/general/InputForm'
 import SelectForm from '@/components/create/SelectForm';
+import Loading from '@/components/Loading';
 
 import { ICategory, ICreateDashboard } from '@/interface/dashboard';
 
@@ -21,22 +23,29 @@ const Create = () => {
   const { user } = userStore()
   const { createDashboard } = dashboardStore()
 
+  const router = useRouter()
+
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(dashboardSchema)
   });
+
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const [categories, setCategories] = useState<ICategory[]>([])
 
   const uploadDashboard = async (data: ICreateDashboard) => {
 
+    setIsLoading(true)
+
     try {
       const dashboardData = await createDashboardApi(user.token!, data)
       createDashboard(dashboardData)
+      router.push(`/scoreboards/${dashboardData.ID}`)
       reset()
     } catch (error) {
       console.log(error);
     } finally {
-      console.log("Finally");
+      setIsLoading(false)
     }
 
   }
@@ -51,6 +60,9 @@ const Create = () => {
 
   return (
     <div className="w-full fill-screen justify-center items-center flex">
+      {
+        isLoading && <Loading />
+      }
       <form className='mx-auto w-1/3 bg-white shadow-md rounded px-8 pt-6 pb-8' onSubmit={handleSubmit((data) => uploadDashboard(data))} onReset={reset as any}>
         <InputForm register={register} autoFocus={true} max={60} text='name' autoComplete='off' type='text' errors={errors.name!} />
         <SelectForm register={register} data={categories} errors={errors.category!} />

@@ -5,7 +5,7 @@ import { TeamPropsType } from "@/types/scoreboard.types"
 
 const Team = ({ team, markers }: TeamPropsType) => {
     return (
-        <div className="w-1/2 fill-annotator">
+        <div className="w-full fill-annotator">
             <Markers markers={markers!} />
             <TeamInfo team={team} />
         </div>

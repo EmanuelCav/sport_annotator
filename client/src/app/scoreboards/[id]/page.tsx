@@ -63,7 +63,7 @@ const Scoreboard = () => {
     }, [seconds, isStarted])
 
     return (
-        <div className='w-full'>
+        <div className='w-full max-w-7xl mx-auto'>
             <HeaderScoreboard hours={hours} minutes={minutes} seconds={seconds} isStarted={isStarted} 
             redirectScoreboards={redirectScoreboards} />
             <ButtonsMarkers />
