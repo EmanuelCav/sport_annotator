@@ -29,7 +29,7 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="w-full">
       <Main redirectCreate={redirectCreate} />
       <Info />
       <Sports categories={categories} />

@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import InputForm from "@/components/general/InputForm"
 import Register from '@/components/auth/Register';
+import Loading from '@/components/Loading';
 
 import { ILogin } from '@/interface/user';
 
@@ -26,12 +27,15 @@ const Auth = () => {
   const router = useRouter()
 
   const [isRegister, setIsRegister] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleRegister = () => {
     setIsRegister(!isRegister)
   }
 
   const login = async (data: ILogin) => {
+
+    setIsLoading(true)
 
     try {
       const dashboardData = await loginApi(data)
@@ -41,13 +45,16 @@ const Auth = () => {
     } catch (error) {
       console.log(error);
     } finally {
-      console.log("Finally");
+      setIsLoading(false)
     }
 
   }
 
   return (
     <div className="w-full fill-screen justify-center items-center flex">
+      {
+        isLoading && <Loading />
+      }
       {
         isRegister && <Register handleRegister={handleRegister} router={router} />
       }
@@ -57,8 +64,8 @@ const Auth = () => {
         <button className="mt-4 bg-amber-500 text-white w-full text-xl font-bold py-2 px-4 rounded hover:bg-amber-700 active:bg-amber-500 focus:outline-none focus:shadow-outline">
           Log in
         </button>
-        <p className='text-lg text-orange-500'>Don't have you an account yet?
-          <span className='ml-2'>Register</span>
+        <p className='text-lg mt-4'>Don't have you an account yet?
+          <span className='ml-2 text-orange-500 cursor-pointer hover:underline active:no-underline' onClick={handleRegister}>Register</span>
         </p>
       </form>
     </div>
